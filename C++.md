@@ -177,7 +177,7 @@ template<classT,
   ```
  The above is a slightly simplified version of a linear search implemented in `<xutility>`. You can write `typename` instead of class as well. The creation of a function from a template is called *instantiation*.
  
- ## The decltype Operator
+## The decltype Operator
  Lets you find the type of an expression. Example:
  ```
  float a = 5.3f;
