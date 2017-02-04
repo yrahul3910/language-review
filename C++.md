@@ -329,3 +329,48 @@ int main()
     bool nb2 = static_cast<bool>(b2); // OK: static_cast performs direct-initialization
 }
 ```
+## Copy Constructors
+Needed when dynamic allocation is used. Example:
+```
+class CMessage {
+public:
+    char* message;
+    CMessage(const char* m) {
+        message = new char[strlen(m) + 1];
+	strcpy(message, m);
+    }    
+};
+```
+If the default copy constructor is used, the second object's pointer will be set by simply copying the pointer, so both will now point to the same string. If any object is modified, the other one gets modified too. For this reason, a custom copy constructor must be implemented. To avoid infinite calls to the copy constructor, a const reference must be used:
+```
+CMessage(const CMessage& str) {
+    size_t len = strlen(str.message) + 1;
+    message = new char[len];
+    strcpy_s(message, len, str.message);
+}
+```
+# Destructors
+Used to deallocate resources used by the class. Essential in case of dynamic allocation.
+# Resource Acquisition is Initialization (RAII)
+According to this concept, objects of a class must own resources, and are responsible for releasing them for exception safety.
+Example [from StackOverflow](http://stackoverflow.com/questions/2321511/what-is-meant-by-resource-acquisition-is-initialization-raii)
+```
+RawResourceHandle* handle=createNewResource();
+handle->performInvalidOperation();  // Oops, throws exception
+...
+deleteResource(handle); // oh dear, never gets called so the resource leaks
+```
+This can be fixed with RAII:
+```
+class ManagedResourceHandle {
+public:
+   ManagedResourceHandle(RawResourceHandle* rawHandle_) : rawHandle(rawHandle_) {};
+   ~ManagedResourceHandle() {delete rawHandle; }
+   ... // omitted operator*, etc
+private:
+   RawResourceHandle* rawHandle;
+};
+
+ManagedResourceHandle handle(createNewResource());
+handle->performInvalidOperation();
+```
