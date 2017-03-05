@@ -349,9 +349,9 @@ CMessage(const CMessage& str) {
     strcpy_s(message, len, str.message);
 }
 ```
-# Destructors
+## Destructors
 Used to deallocate resources used by the class. Essential in case of dynamic allocation.
-# Resource Acquisition is Initialization (RAII)
+## Resource Acquisition is Initialization (RAII)
 According to this concept, objects of a class must own resources, and are responsible for releasing them for exception safety.
 Example [from StackOverflow](http://stackoverflow.com/questions/2321511/what-is-meant-by-resource-acquisition-is-initialization-raii)
 ```
@@ -373,4 +373,58 @@ private:
 
 ManagedResourceHandle handle(createNewResource());
 handle->performInvalidOperation();
+```
+## Operator Overloading
+Lets you define how an operator behaves when used with objects of your classes. The operators that cannot be overloaded are :: (scope resolution), ?: (ternary conditional operator), . (member selection operator), sizeof, and .\* (dereference pointer to class member).  
+Example:
+```
+class CBox {
+public:
+    bool operator> (CBox& box) const {
+        return this->Volume() > box.Volume();
+    }
+    // Overloading for more support
+    bool operator> (const double& val) {
+        return this->Volume() > val;
+    }
+};
+bool operator> (const double& val, const CBox& box) {
+    return val > box.Volume();
+}
+```
+### Overloading the Increment and Decrement Operators
+```
+class Length
+{
+private:
+	double len; // Length value for the class
+
+public:
+	Length & operator++() // Prefix increment operator
+	{
+		++(this -> len);
+		return *this;
+	}
+
+	const Length operator++(int) // Postfix increment operator
+	{
+		Length length = *this;     // Copy the current object
+		++*this;                // Increment the current object
+		return length;          // Return the original copy
+	}
+
+	Length & operator--() // Prefix decrement operator
+	{
+		--(this->len);
+		return *this;
+	}
+
+	const Length operator--(int) // Postfix decrement operator
+	{
+		Length length = *this;     // Copy the current object
+		--*this;                // Decrement the current object
+		return length;          // Return the original copy
+	}
+	// rest of the class...
+};
 ```
