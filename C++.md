@@ -428,3 +428,68 @@ public:
 	// rest of the class...
 };
 ```
+
+# Miscellaneous
+## ADL - Argument Dependent Lookup (Koenig Lookup)
+You don't need to qualify the namespace for functions if any of the arguments are defined in the same namespace as the function.
+Example:
+```
+namespace Foo {
+    void foo();
+    class Bar { };
+}
+Foo::Bar obj;
+
+int main() {
+    foo(obj); // OK, Foo::foo() is found using ADL
+}
+```
+
+## Move Semantics
+Source: [Stack Overflow](http://stackoverflow.com/questions/3106110/what-are-move-semantics/11540204#11540204)  
+
+The copy constructor defines what happens when an lvalue is copied. An expression like `x + y` is an rvalue. When a constructor is called using a statement like
+```
+Foo foo(foo1 + foo2);
+```
+the argument is an rvalue, and is a temporary value that is destroyed at the semicolon. From C++11, rvalue references allow us to differentiate lvalues from rvalues, so a constructor can accept an rvalue reference as a parameter, and a deep copy of objects isn't required:
+```
+Foo(Foo&& param) {
+    this->data = param.data;
+    param.data = 0;
+}
+```
+This constructor is called a move constructor and is responsible for moving resources from one object to another.  
+  
+> An rvalue of class type is an expression whose evaluation creates a temporary object. Under normal circumstances, no other expression inside the same scope denotes the same temporary object.  
+
+### Rvalue References
+Moving from lvalues is dangerous since it causes loss of data, but moving from rvalues is harmless since the temporary rvalue objects are destroyed. C++11 provides rvalue references to distinguish between lvalues and rvalues. An rvalue reference binds only to rvalues. Rvalue references of type X (`X&&`) can also bind to all value categories of type Y, if an implicit conversion from type Y exists.
+
+### Move Assignment Operator
+With the introduction of rvalues in C++11, the Rule of Three now extends to the Rule of Five, which states that if one of the following needs to be implemented by the programmer, the others probably should be implemented as well:
+* Destructor
+* Copy constructor
+* Move constructor
+* Copy assignment operator
+* Move assignment operator
+The move assignment operator releases the old resource(s) and acquires the new resource(s) from the argument:
+```
+Foo& operator=(Foo&& param) {
+    if (this != &param) { // check for self assignment
+        delete this->data;
+	
+	data = param.data;
+	param.data = 0;
+    }
+    return *this;
+}
+```
+This can be implemented using the move-and-swap idiom, which is similar to the copy-and-swap idiom, and simplifies the implementation.
+```
+Foo& operator=(Foo param) {
+    std::swap(this->data, param.data);
+    return *this;
+}
+```
+Since the function is called with an rvalue actual argument, the move constructor initializes `param` by moving the actual argument. When control reaches the closing brace of the function, `param` goes out of scope and the old resource(s) are released automatically.
