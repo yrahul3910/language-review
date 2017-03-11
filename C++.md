@@ -493,3 +493,24 @@ Foo& operator=(Foo param) {
 }
 ```
 Since the function is called with an rvalue actual argument, the move constructor initializes `param` by moving the actual argument. When control reaches the closing brace of the function, `param` goes out of scope and the old resource(s) are released automatically.
+
+### std::move
+The `std::move` function in `<utility>` casts an lvalue to an rvalue.
+
+### xvalues, prvalues, glvalues
+A _prvalue_ is an rvalue - a temporary object that can be assigned to an rvalue reference. The result of `std::move(lvalue)` does not create a temporary object, but can be assigned to an rvalue reference - such expressions are called _xvalues_. xvalues and lvalues are grouped as _glvalues_ or generalized lvalues.
+
+### Forwarding References
+In template functions, when an argument is an rvalue reference (`Type&&`), an lvalue (`X`) will also bind to it, unlike in regular functions, and `Type` is deduced to be `X&`.
+Example:
+```
+void foo(int&& i);
+ 
+template <typename T>
+void bar(T&& i);
+
+int k = 0;
+foo(k); // Error
+bar(k); // OK, T is deduced as int&
+```
+In the above example, `int&&` is an rvalue reference, and `T&&` is called a universal reference or forwarding reference (as it is called in the [proposal for the C++17 standard](https://isocpp.org/files/papers/N4164.pdf). The `auto&&` reference is also a forwarding reference.
