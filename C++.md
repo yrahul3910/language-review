@@ -445,6 +445,31 @@ int main() {
 }
 ```
 
+## Swap functions should be `public friend`
+Source: [Stack Overflow](http://stackoverflow.com/questions/5695548/public-friend-swap-member-function)
+Since the canonical way of swapping is using `std::swap`, and the swap function cannot be partially specialized in namespace std, the best solution is to make the swap function a friend, and find it via ADL. Example in next section.
+
+## The copy-and-swap idiom
+Example:
+```
+class Foo {
+public:
+    friend void swap(Foo& a, Foo& b) {
+        // enabling ADL
+	using std::swap;
+	
+	// swap data members
+    }
+    
+    Foo& operator=(Foo foo) {
+    	// Object is copied to the parameter, now swap
+	swap(*this, foo);
+	return *this;
+    }    	
+};
+```
+The `*this` object refers to the LHS of the assignment statement. This object is swapped with the temporary value taken by value as the argument, effectively copying the data from the object on the RHS to the current one (on the LHS).
+
 ## Move Semantics
 Source: [Stack Overflow](http://stackoverflow.com/questions/3106110/what-are-move-semantics/11540204#11540204)  
 
