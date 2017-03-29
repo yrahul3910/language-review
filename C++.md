@@ -1,3 +1,62 @@
+Table Of Contents
+=================
+   * [Type Casting](#type-casting)
+      * [Static Cast](#static-cast)
+      * [C-style Cast](#c-style-cast)
+   * [Getting type of an expression](#getting-type-of-an-expression)
+      * [The auto keyword](#the-auto-keyword)
+      * [typedef](#typedef)
+      * [Enumerations](#enumerations)
+   * [Pointers](#pointers)
+      * [Pointer to char](#pointer-to-char)
+   * [sizeof](#sizeof)
+   * [Pointers and Constants](#pointers-and-constants)
+   * [Pointer Arithmetic](#pointer-arithmetic)
+   * [Dynamic Memory Allocation](#dynamic-memory-allocation)
+      * [Dynamically Allocating 2D Arrays](#dynamically-allocating-2d-arrays)
+   * [Functions](#functions)
+      * [Returning Pointers](#returning-pointers)
+      * [Static Variables](#static-variables)
+      * [Function Overloading](#function-overloading)
+      * [Pointers to Functions](#pointers-to-functions)
+      * [Default Parameters](#default-parameters)
+      * [Function Templates](#function-templates)
+      * [The decltype Operator](#the-decltype-operator)
+      * [Variadic Template Functions (C  11)](#variadic-template-functions-c11)
+      * [Lambda Expressions (C  11)](#lambda-expressions-c11)
+   * [Structures](#structures)
+      * [Initializing Structures](#initializing-structures)
+   * [Classes](#classes)
+      * [Defining Member Functions Outside](#defining-member-functions-outside)
+      * [Inline Functions](#inline-functions)
+      * [Constructors](#constructors)
+         * [Initialization Lists](#initialization-lists)
+         * [Accessing Private Members Outside the Class - Friend Functions](#accessing-private-members-outside-the-class---friend-functions)
+         * [The explicit Specifier](#the-explicit-specifier)
+      * [Copy Constructors](#copy-constructors)
+      * [Destructors](#destructors)
+      * [Resource Acquisition is Initialization (RAII)](#resource-acquisition-is-initialization-raii)
+      * [Operator Overloading](#operator-overloading)
+         * [Overloading the Increment and Decrement Operators](#overloading-the-increment-and-decrement-operators)
+   * [Miscellaneous](#miscellaneous)
+      * [ADL - Argument Dependent Lookup (Koenig Lookup)](#adl---argument-dependent-lookup-koenig-lookup)
+      * [Swap functions should be public friend](#swap-functions-should-be-public-friend)
+      * [The copy-and-swap idiom](#the-copy-and-swap-idiom)
+      * [Move Semantics](#move-semantics)
+         * [Rvalue References](#rvalue-references)
+         * [Move Assignment Operator](#move-assignment-operator)
+         * [std::move](#stdmove)
+         * [xvalues, prvalues, glvalues](#xvalues-prvalues-glvalues)
+         * [Forwarding References](#forwarding-references)
+   * [Other C  11 Features](#other-c11-features)
+      * [Range-Based For Loops](#range-based-for-loops)
+      * [override and <code>final</code>](#override-and-final)
+      * [The constexpr Specifier](#the-constexpr-specifier)
+      * [Concurrency Support](#concurrency-support)
+         * [Mutextes](#mutextes)
+         * [Automatic Lock Management](#automatic-lock-management)
+
+
 # Type Casting
 ## Static Cast
 Explicitly casts an expression to desired type. The compiler checks whether the cast is possible statically.
@@ -539,3 +598,55 @@ foo(k); // Error
 bar(k); // OK, T is deduced as int&
 ```
 In the above example, `int&&` is an rvalue reference, and `T&&` is called a universal reference or forwarding reference (as it is called in the [proposal for the C++17 standard](https://isocpp.org/files/papers/N4164.pdf). The `auto&&` reference is also a forwarding reference.
+
+# Other C++11 Features
+## Range-Based For Loops
+This syntax allows the use of for-each style loops, with the syntax:
+```
+int a[5] = {1, 2, 3, 4, 5};
+for (int& x : a)
+  a *= 2;
+```
+
+## `override` and `final`
+The `override` specifier means that the compiler will check the base class(es) to see if there is a virtual function with the same signature. If not, the compiler gives an error.
+```
+class Base {
+public:
+  virtual void f(int);
+};
+
+class Derived : public Base {
+  virtual void f(double) override; // Error.
+};
+```
+
+C++11 also adds the `final` identifier. With this,  
+* if `final` is applied to a class, no class can inherit from the current class
+* if applied to a function, then it cannot be overriden in derived classes.
+
+## The `constexpr` Specifier
+Source: [CPP Reference](http://en.cppreference.com/w/cpp/language/constexpr)
+The `constexpr` specifier declares that the value of the variable or function can be evaluated at compile time.  
+* When used with an object or variable declaration, it implies `const`
+* When used with a function, it implies `inline`
+
+## Concurrency Support
+C++11 introduces a new `<thread>` header file for concurrency. A `std::thread` object takes the code to be executed as a parameter to its constructor, like a functor, lambda or a function pointer. `std::this_thread` gives a reference to the currently running thread.
+
+### Mutextes
+Mutexes are in the `<mutex>` header file, and the `lock()` and `unlock()` methods are used to define a critical section in code. The `std::recursive_mutex` class allows the same thread to acquire the mutex multiple times. This is useful, for example, in cases where one member function calls another, and all of them use the same mutex (which would otherwise never work because the first function already acquired the lock).
+
+### Automatic Lock Management
+The `std::lock_guard<std::mutex>` is an RAII-style wrapper for a mutex. When the object is created, it calls `lock()` on the mutex automatically. When the object is destructed, it calls `unlock()`. Example:
+```
+class thread_safe_counter {
+  std::mutex mutex;
+  int value;
+
+  void increment() {
+    std::guard_lock<std::mutex> guard(mutex);
+    ++value;
+  }
+};
+```
