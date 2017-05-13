@@ -22,8 +22,8 @@ Table Of Contents
       * [Default Parameters](#default-parameters)
       * [Function Templates](#function-templates)
       * [The <code>decltype</code> Operator](#the-decltype-operator)
-      * [Variadic Template Functions (C  11)](#variadic-template-functions-c11)
-      * [Lambda Expressions (C  11)](#lambda-expressions-c11)
+      * [Variadic Template Functions (C++11)](#variadic-template-functions-c11)
+      * [Lambda Expressions (C++11)](#lambda-expressions-c11)
    * [Structures](#structures)
       * [Initializing Structures](#initializing-structures)
    * [Classes](#classes)
@@ -53,7 +53,7 @@ Table Of Contents
       * [<code>override</code> and <code>final</code>](#override-and-final)
       * [The <code>constexpr</code> Specifier](#the-constexpr-specifier)
       * [Concurrency Support](#concurrency-support)
-         * [Mutextes](#mutextes)
+         * [Mutexes](#mutexes)
          * [Automatic Lock Management](#automatic-lock-management)
 
 
@@ -634,7 +634,7 @@ The `constexpr` specifier declares that the value of the variable or function ca
 ## Concurrency Support
 C++11 introduces a new `<thread>` header file for concurrency. A `std::thread` object takes the code to be executed as a parameter to its constructor, like a functor, lambda or a function pointer. `std::this_thread` gives a reference to the currently running thread.
 
-### Mutextes
+### Mutexes
 Mutexes are in the `<mutex>` header file, and the `lock()` and `unlock()` methods are used to define a critical section in code. The `std::recursive_mutex` class allows the same thread to acquire the mutex multiple times. This is useful, for example, in cases where one member function calls another, and all of them use the same mutex (which would otherwise never work because the first function already acquired the lock).
 
 ### Automatic Lock Management
