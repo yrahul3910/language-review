@@ -39,3 +39,51 @@
 * Module docstrings should precede other statements.
 * Comments begin with a `#`.
 * A special comment on the first line beginning with `#!` called the shebang controls module execution by the program loader.
+
+## Objects
+* Think of named references to objects rather than variables
+ * Assignment attaches a name to an object
+ * Assigning from one reference to another puts two name tags on the same object
+* The GC reclaims unreachable objects
+* This `is` operator determines equality of identity
+* Function arguments are passed by object reference
+ * Functions can modify mutable arguments
+* Reference is lost if a formal function argument is rebound
+ * To change a mutable argument, change its contents
+* `return` also passes by object reference
+* Function arguments can be specified with defaults
+* Python uses dynamic typing (we don't specify types in advance), and strong typing (types are not coerced to match)
+* Names are looked up in 4 nested scopes: LEGB (local, enclosing, global, built-ins)
+* Global references can be read from a local scope.
+* Use `global` to assign to global references from local scope
+* `import` and `def` result in binding to named references
+* `type` can be used to check the type of an object
+* `dir()` can be used to introspet object and get its attributes
+* The name of a function or object can be accessed through its `__name__` attribute
+* The docstring of a function or object can be accessed through its `__doc__` attribute
+* Use `len()` to measure length of a string
+* You can multiply a string with an integer
+
+## Collections
+Tuples are immutable sequence types
+ * Literal syntax: Optional parentheses around a comma-separated list
+ * Single element tuples must use trailing comma
+ * Tuple unpacking--return values and idiomatic swap
+* Strings are immutable sequences of Unicode codepoints
+ * Concatenation most efficiently performed using join on an empty separator
+ * The `partition()` method is a useful and elegant string parsing tool
+ * The `format()` method provides a powerful way of replacing placeholders with values
+* Ranges represent integer sequences with regular intervals
+ * The `enumerate()` function is often a superior alternative
+* Lists are heterogeneous mutable sequence types
+ * Negative indexes work backwards from the end
+ * Slicing allows us to copy all or part of a list
+ * The full slice is a common idiom for copying lists, although the `copy()` method and `list()` constructor are less obscure
+* List (and other collection) copies are shallow
+* List repetition is shallow
+* Dictionaries map immutable keys to mutable values
+ * Order is arbitrary
+ * The `keys()`, `values()` and `items()` methods provide views onto different aspects of a dictionary
+* Sets store on unordered collection of unique elements
+ * Support powerful and expressive set algebra operations and predicates
+* `pprint` module supports pretty-printing of compound data structures
