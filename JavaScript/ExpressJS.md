@@ -135,3 +135,18 @@ app.get('/home', (req, res) => {
 	res.render('index', {message: 'This is the home page'});
 });
 ```
+
+# Processing PUT requests
+`app.put` can be used to handle PUT requests. The following code processes `/message/:id` requests, and returns the SHA1 hash of the current date plus the ID as a response.
+```
+const express = require('express');
+const crypto = require('crypto');
+let app = express();
+
+app.put('/message/:id', (req, res) => {
+   res.end(crypto.createHash('sha1')
+       .update(new Date().toDateString() + req.params.id)
+       .digest('hex')); 
+});
+app.listen(process.argv[2]);
+```
