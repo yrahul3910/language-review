@@ -158,3 +158,69 @@ public class HomeController : Controller
     }
 }
 ```
+
+# Passing parameters to controllers
+* Since actions are simply methods, they can accept arguments as well. These can be passed as query strings or form fields, or as part of the URL (in the route defined above, this would be the `id` parameter).
+* We can also set types for the parameters. This is called model binding. For example:
+```cs
+public IActionResult Post(int id)
+{
+    return new ContentResult { Content = id.ToString() };
+}
+```
+* If we now go to `/blog/post/test`, we get 0 on the screen. Since `test` isn't a valid integer, rather than throwing an error, the framework simply returns the default value.
+* Sometimes, we want to be able to differentiate between the default value when passed explicitly, and the default value when a parsing error occurs. There are two approaches for this, both of which are C# features.
+    * Use a nullable type. In this case, the default value becomes `null`.
+    ```cs
+    public IActionResult Post(int? id)
+    {
+        if (id == null)
+            return new ContentResult { Content = "null" };
+        return new ContentResult { Content = id.ToString() };
+    }
+    ```
+    * Use the C# default argument syntax to explicitly provide a default value.
+
+# Routing
+* We can define route patterns, as done above. 
+* An = denotes a default value, and a ? denotes an optional value.
+* Thus, in the above route, all of `/home/index`, `/home`, and `/` map to the same action.
+* We can also specify constraints, like types on the parameters. This is done by adding a colon. Example:
+```cs
+"{controller=Home}/{action=Index}/{id:int?}"
+```
+
+## Customizing Application URLs
+* We can customize what action occurs for what URL pattern rather than following the default convention if we prefer. We do this by adding a `Route` attribute with a string parameter above the action. The order the parameters occur in the argument list to the function does not have to match the order that they appear in the route pattern.
+```cs
+[Route("blog/{year:int}/{month:int}/{key}")]
+public IActionResult Post(int month, int year, string key)
+{
+    return new ContentResult
+    {
+        Content = string.Format("Year = {0}, Month = {1}, Key = {2}", year, month, key)
+    };
+}
+```
+* We can also take out common parts of the routes and promote them to the controllers themselves.
+```cs
+[Route("blog")]
+public class BlogController : Controller
+{
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    [Route("{year:min(2000)}/{month:range(1, 12)}/{key}")]
+    public IActionResult Post(int month, int year, string key)
+    {
+        return new ContentResult
+        {
+            Content = string.Format("Year = {0}, Month = {1}, Key = {2}", year, month, key)
+        };
+    }
+}
+```
+*  Applying the route attribute at the controller level does not automatically apply the custom route to actions that don't have the route attributes applied. We can use an empty string for the parameter of the `Route` attribute in cases where we want the custom route.
+* Adding custom routes like this removes them from the candidates for the more generic routes defined in the `Startup` class.
