@@ -68,7 +68,7 @@ A C-style cast is basically identical to trying out a range of sequences of C++ 
 # Getting type of an expression
 Use the `typeid` operator. `typeid(expr)` returns a `type_info` object.   
 The `name()` function gets the type of the expression as a string:
-```
+```cpp
 std::cout << typeid(4*5.3f).name();
 ```
 will print `float`. The `<typeinfo>` header file must be included.
