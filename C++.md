@@ -68,7 +68,7 @@ A C-style cast is basically identical to trying out a range of sequences of C++ 
 # Getting type of an expression
 Use the `typeid` operator. `typeid(expr)` returns a `type_info` object.   
 The `name()` function gets the type of the expression as a string:
-```
+```cpp
 std::cout << typeid(4*5.3f).name();
 ```
 will print `float`. The `<typeinfo>` header file must be included.
@@ -81,21 +81,21 @@ Gives a new name to an existing data type. Syntax: `typedef <existing type> <ali
 
 ## Enumerations
 Syntax example:
-```
+```cpp
 enum months {January, February, March, April, May, June, July, August, September, October, November, December};
 ```
 You can now make a `months` object like this:
-```
+```cpp
 months birth_month = March;
 ```
 Each enumeration constants are given integer values, starting from 0. These can be custom modified within the definition as well.
-```
+```cpp
 enum punctuation {comma=',', period='.', question='?'};
 ```
 
 # Pointers
 Variables that hold the address of another variable of the type that they point to.
-```
+```cpp
 int x;
 int *p = &x;
 ```
@@ -106,20 +106,20 @@ Uninitialized pointers have random values, called wild pointers. They must be in
 
 ## Pointer to char
 A pointer to char can be initialized to a string literal.
-```
+```cpp
 char *sentence = "Hello, World!";
 ```
 This makes an array of type `const char`, terminating with the `\0` character, and then stores the address of the first character literal in the pointer sequence.  
 Pointers take 4 bytes on 32-bit machines and 8 bytes on 64-bit machines.
 
 An array of pointers can be declared as shown:
-```
+```cpp
 char *ptr[] = {"Hello", "World!"};
 ```
 
 # sizeof
 Used to get the space taken in bytes by a data type or a variable. Syntax:
-```
+```cpp
 sizeof var
 sizeof(data-type)
 ```
@@ -128,46 +128,46 @@ sizeof(data-type)
 If we look at the array of pointers defined above, `*words[0] = "fist"` won't compile since it's an array of `const char`. `*words[0] = 'F'` will compile, though it crashes at runtime. This can be avoided by making the pointer constant.  
 
 The below code defines an array of __pointers to constants__. 
-```
+```cpp
 const char* p[] = {"First", "Second", "Third"};
 ```
 You could still write
-```
+```cpp
 p[0] = p[1]
 ```
 since this modifies the pointers and not the values stored. To make the pointers constant as well, we write
-```
+```cpp
 const char* const p[] = {"First", "Second", "Third"};
 ```
 # Pointer Arithmetic
 If we have an array `arr` and a pointer `word = arr`, then `word++` makes the pointer point to the second element. Because of this,
-```
+```cpp
 arr[2]
 *(word + 2)
 ```
 are both the same.  
 With 2D arrays, a double pointer is required:
-```
+```cpp
 int x[2][2] = {1, 2, 3, 4};
 int** ptr = x; // Correct
 ```
 The following expressions are equivalent:
-```
+```cpp
 x[i][j]
 *(*(ptr + i) + j)
 ```
 # Dynamic Memory Allocation
 You can dynamically allocate memory for an array as shown:
-```
+```cpp
 int* ptr = new int[n];
 ```
 where `n` is any variable of type int. To deallocate this, you use
-```
+```cpp
 delete[] ptr;
 ```
 The same statement can be used for any dimensioned array. After deallocating, it is important to re-assign `ptr` to `nullptr`.
 ## Dynamically Allocating 2D Arrays
-```
+```cpp
 int **matrix, rows, cols;
 cin >> rows >> cols;
 matrix = new (std::nothrow) int *[row]; // if compiler cannot allocate memory, matrix = nullptr
@@ -184,7 +184,7 @@ for (int i = 0; i < rows; ++i) {
 * Even though the rvalue reference parameter may refer to an rvalue, the parameter itself is an lvalue.
 ## Arguments to main
 The syntax is:
-```
+```cpp
 int main(int argc, char *argv[]) {
   ...
 }
@@ -200,7 +200,7 @@ The value of static variables persist from one function call to the next. Initia
 ## Function Overloading
 Multiple functions with the same name. The compiler chooses the correct version for the function call.  
 A different return type does not distinguish a function adequately, only by the parameter list. You cannot overload on a type and an lvalue reference to that type. However, the compiler can distinguish between the following:
-```
+```cpp
 void f(int& arg);
 void f(int&& arg);
 ```
@@ -208,11 +208,11 @@ The first will always be selected when the argument is an lvalue. The second wil
 
 ## Pointers to Functions
 They allow you to call a function using the pointer. The pointer must also contain data of the parameters of the function it can point to. It can then only point to functions with the same parameters. The syntax is:
-```
+```cpp
 return_type (*name_of_pointer)(argument_types)
 ```
 An array of pointers to functions can be used as shown:
-```
+```cpp
 double square(double);
 double cube(double);
 double sqrt(double);
@@ -223,7 +223,7 @@ Must be kept at the end of the function declaration.
 
 ## Function Templates
 Templates let the compiler generate functions from a template that you define. The generated functions will have the same code, customized by the data type you give.
-```
+```cpp
 template<classT,
 	class U> inline
 	T Find(T First,T Last, const U& Val)
@@ -238,13 +238,13 @@ template<classT,
  
 ## The decltype Operator
  Lets you find the type of an expression. Example:
- ```
+ ```cpp
  float a = 5.3f;
  int b = 3;
  decltype(a * b) c = a * b;
  ```
  The main use is in deciding the return type of a function template as shown:
- ```
+ ```cpp
 template < class T1, class T2 >
 auto product(T1 v1[], T2 v2[], size_t count) -> decltype(v1[0] * v2[0])
 {
@@ -256,7 +256,7 @@ auto product(T1 v1[], T2 v2[], size_t count) -> decltype(v1[0] * v2[0])
 
 ## Variadic Template Functions (C++11)
 Let you define function templates that accept any number of arguments. For this, a base function must be used. These are generally recursive. A simple example, taken from MSDN, is below.
-```
+```cpp
 template <typename T> void print(const T& t) {  
     cout << t << endl;  
 }  
@@ -270,7 +270,7 @@ template <typename First, typename... Rest> void print(const First& first, const
 ## Lambda Expressions (C++11)
 It is an anonymous function that can be used as a predicate to functions that accept a function pointer as an argument.
 Example:
-```
+```cpp
 sort (arr, arr + length, 
     [](int a, int b) {
       return a > b;
@@ -278,14 +278,14 @@ sort (arr, arr + length,
 );
 ```
 sorts in descending order. The square brackets is for *lambda capture* expressions. Specifying an = captures all variables in the surronding scope by value, and a & captures by reference. You can capture some values by value and some by reference, using a comma-separated list. For example,
-```
+```cpp
 [=, &var]
 ```
 captures all variables except var by value.
 
 # Structures
 A collection of variables in one user-defined data type. All members are public by default, and a `struct` cannot have member functions. Example:
-```
+```cpp
 struct book {
   char title[80];
   char author[20];
@@ -293,13 +293,13 @@ struct book {
 };
 ```
 ## Initializing Structures
-```
+```cpp
 book novel = { "How to be Ferociously Happy and other essays", "Dushka Zapata", 2016 };
 std::cout << novel.author;
 ```
 # Classes
 Syntax:
-```
+```cpp
 class class_name {
 public:
   // member functions and data
@@ -312,7 +312,7 @@ private:
 Members are *private* by default.
 ## Defining Member Functions Outside
 Example:
-```
+```cpp
 class Foo {
   int Bar();
 };
@@ -328,7 +328,7 @@ The `inline` keyword is a suggestion to the compiler that the function definitio
 A member function with the same name as its class, with no return type, used to initialize member variables. It should be kept in the public section.
 
 ### Initialization Lists
-```
+```cpp
 class Foo {
   int Boo, Bar;
 public:
@@ -337,7 +337,7 @@ public:
 ```
 ### Accessing Private Members Outside the Class - Friend Functions
 Friend functions are not member functions, but can access the private members of a class. This is done by including the keyword `friend` before its prototype, which must be included in the class, in the public section.
-```
+```cpp
 class Cube {
   int side;
 public:
@@ -352,7 +352,7 @@ int getVolume(Cube cube) {
 ```
 ### The explicit Specifier
 It specifies that a constructor does not allow implicit conversions. Example (taken from [CPPReference](http://en.cppreference.com/w/cpp/language/explicit))
-```
+```cpp
 struct A
 {
     A(int) { }      // converting constructor
@@ -390,7 +390,7 @@ int main()
 ```
 ## Copy Constructors
 Needed when dynamic allocation is used. Example:
-```
+```cpp
 class CMessage {
 public:
     char* message;
@@ -401,7 +401,7 @@ public:
 };
 ```
 If the default copy constructor is used, the second object's pointer will be set by simply copying the pointer, so both will now point to the same string. If any object is modified, the other one gets modified too. For this reason, a custom copy constructor must be implemented. To avoid infinite calls to the copy constructor, a const reference must be used:
-```
+```cpp
 CMessage(const CMessage& str) {
     size_t len = strlen(str.message) + 1;
     message = new char[len];
@@ -413,14 +413,14 @@ Used to deallocate resources used by the class. Essential in case of dynamic all
 ## Resource Acquisition is Initialization (RAII)
 According to this concept, objects of a class must own resources, and are responsible for releasing them for exception safety.
 Example [from StackOverflow](http://stackoverflow.com/questions/2321511/what-is-meant-by-resource-acquisition-is-initialization-raii)
-```
+```cpp
 RawResourceHandle* handle=createNewResource();
 handle->performInvalidOperation();  // Oops, throws exception
 ...
 deleteResource(handle); // oh dear, never gets called so the resource leaks
 ```
 This can be fixed with RAII:
-```
+```cpp
 class ManagedResourceHandle {
 public:
    ManagedResourceHandle(RawResourceHandle* rawHandle_) : rawHandle(rawHandle_) {};
@@ -436,7 +436,7 @@ handle->performInvalidOperation();
 ## Operator Overloading
 Lets you define how an operator behaves when used with objects of your classes. The operators that cannot be overloaded are :: (scope resolution), ?: (ternary conditional operator), . (member selection operator), sizeof, and .\* (dereference pointer to class member).  
 Example:
-```
+```cpp
 class CBox {
 public:
     bool operator> (CBox& box) const {
@@ -452,7 +452,7 @@ bool operator> (const double& val, const CBox& box) {
 }
 ```
 ### Overloading the Increment and Decrement Operators
-```
+```cpp
 class Length
 {
 private:
@@ -492,7 +492,7 @@ public:
 ## ADL - Argument Dependent Lookup (Koenig Lookup)
 You don't need to qualify the namespace for functions if any of the arguments are defined in the same namespace as the function.
 Example:
-```
+```cpp
 namespace Foo {
     void foo();
     class Bar { };
@@ -510,7 +510,7 @@ Since the canonical way of swapping is using `std::swap`, and the swap function 
 
 ## The copy-and-swap idiom
 Example:
-```
+```cpp
 class Foo {
 public:
     friend void swap(Foo& a, Foo& b) {
@@ -533,11 +533,11 @@ The `*this` object refers to the LHS of the assignment statement. This object is
 Source: [Stack Overflow](http://stackoverflow.com/questions/3106110/what-are-move-semantics/11540204#11540204)  
 
 The copy constructor defines what happens when an lvalue is copied. An expression like `x + y` is an rvalue. When a constructor is called using a statement like
-```
+```cpp
 Foo foo(foo1 + foo2);
 ```
 the argument is an rvalue, and is a temporary value that is destroyed at the semicolon. From C++11, rvalue references allow us to differentiate lvalues from rvalues, so a constructor can accept an rvalue reference as a parameter, and a deep copy of objects isn't required:
-```
+```cpp
 Foo(Foo&& param) {
     this->data = param.data;
     param.data = 0;
@@ -558,7 +558,7 @@ With the introduction of rvalues in C++11, the Rule of Three now extends to the 
 * Copy assignment operator
 * Move assignment operator
 The move assignment operator releases the old resource(s) and acquires the new resource(s) from the argument:
-```
+```cpp
 Foo& operator=(Foo&& param) {
     if (this != &param) { // check for self assignment
         delete this->data;
@@ -570,7 +570,7 @@ Foo& operator=(Foo&& param) {
 }
 ```
 This can be implemented using the move-and-swap idiom, which is similar to the copy-and-swap idiom, and simplifies the implementation.
-```
+```cpp
 Foo& operator=(Foo param) {
     std::swap(this->data, param.data);
     return *this;
@@ -587,7 +587,7 @@ A _prvalue_ is an rvalue - a temporary object that can be assigned to an rvalue 
 ### Forwarding References
 In template functions, when an argument is an rvalue reference (`Type&&`), an lvalue (`X`) will also bind to it, unlike in regular functions, and `Type` is deduced to be `X&`.
 Example:
-```
+```cpp
 void foo(int&& i);
  
 template <typename T>
@@ -602,7 +602,7 @@ In the above example, `int&&` is an rvalue reference, and `T&&` is called a univ
 # Other C++11 Features
 ## Range-Based For Loops
 This syntax allows the use of for-each style loops, with the syntax:
-```
+```cpp
 int a[5] = {1, 2, 3, 4, 5};
 for (int& x : a)
   a *= 2;
@@ -610,7 +610,7 @@ for (int& x : a)
 
 ## `override` and `final`
 The `override` specifier means that the compiler will check the base class(es) to see if there is a virtual function with the same signature. If not, the compiler gives an error.
-```
+```cpp
 class Base {
 public:
   virtual void f(int);
@@ -639,7 +639,7 @@ Mutexes are in the `<mutex>` header file, and the `lock()` and `unlock()` method
 
 ### Automatic Lock Management
 The `std::lock_guard<std::mutex>` is an RAII-style wrapper for a mutex. When the object is created, it calls `lock()` on the mutex automatically. When the object is destructed, it calls `unlock()`. Example:
-```
+```cpp
 class thread_safe_counter {
   std::mutex mutex;
   int value;

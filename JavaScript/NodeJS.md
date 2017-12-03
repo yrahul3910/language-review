@@ -1,5 +1,5 @@
 This was constructed with the help of Node School's How to NPM and Learn You Node. You can get these by running
-```
+```sh
 npm install how-to-node
 npm install learnyounode
 ```
@@ -37,12 +37,12 @@ Lists the outdated packages in use. Used in conjunction with `npm update`, which
 * `fs` is a Node core module that includes functions to help with I/O.  
 * In Node.js, the first two elements of the `process.argv` array, which lists the arguments to a program, are reserved for Node settings. This means the first argument is at `process.argv[2]`. You can run a program using `node program.js`  
 Examples:
-```
+```js
 // Synchronously read a file, which returns a buffer object, and get its contents
 var input = fs.readFileSync(process.argv[2]).toString();
 ```
 The Node way is to use async methods, as shown below:
-```
+```js
 // Async way (the Node way):
 fs.readFile(process.argv[2], (err, data) => {
   if (err) console.log(err);
@@ -53,7 +53,7 @@ fs.readFile(process.argv[2], (err, data) => {
 });
 ```
 `readdir()` returns the files in a directory. It takes a directory and a callback as arguments. Example:
-```
+```js
 // Get filenames in a directory, filter by the extension in 2nd argument
 fs.readdir(process.argv[2], (err, list) => {
   if (err) console.log(err);
@@ -66,7 +66,7 @@ fs.readdir(process.argv[2], (err, list) => {
 ```
 # Modularizing Code
 For a single function export, overwrite the `module.exports` object. Example:
-```
+```js
 module.exports = function (dir, filterStr, callback) {
   fs.readdir(dir, function (err, list) {
     if (err) {
@@ -82,7 +82,7 @@ module.exports = function (dir, filterStr, callback) {
 }
 ```
 This is put in a file, say `list.js`, and then used as:
-```
+```js
 let list = require('./list');
 list(process.argv[2], process.argv[3], (err, data) => {
   if (err) console.log(err);
@@ -94,7 +94,7 @@ list(process.argv[2], process.argv[3], (err, data) => {
 
 # HTTP Requests
 ## HTTP GET in NodeJS
-```
+```js
 const http = require('http');
 http.get(process.argv[2], (response) => {
   response.setEncoding('utf8');
@@ -106,7 +106,7 @@ http.get(process.argv[2], (response) => {
 
 ## Handling Async Data
 When getting data from multiple servers using `http.get()`, the data may not come in the order expected. To solve this issue in Node, we use counting callbacks that count how many servers have sent data, and store the data into a queue. An alternative is to use the `async` package. The example below uses the `bl` module to get all the chunks of data from a server.
-```
+```js
 const http = require('http');
 const bl = require('bl');
 
@@ -138,7 +138,7 @@ for (let i = 2; i < 5; ++i) {
 The `net` module has a `createServer()` function that takes a connection listener as an argument, and returns the server. Every connection to the TCP server triggers a call to the listener. The listener takes the socket as a parameter. You must call `server.listen()` to listen on a particular port.  
 
 The example below creates a TCP time server that writes the current time to the socket in the format `YYYY-MM-DD HH:MM`.
-```
+```js
 const net = require('net');
 
 const formatZeros = (i) => {
@@ -159,7 +159,7 @@ server.listen(process.argv[2]);
 
 ## Creating an HTTP File Server
 The `http` module also provides a `createServer()` function that takes a listener as an argument and returns the HTTP server. The listener takes an HTTP request and a response as parameters. `request` is used to get information about the request such as the query string, while `response` is what is sent back, with headers. These parameters are also Node streams. The following code creates an HTTP server that returns the same text file on every connection.
-```
+```js
 const http = require('http');
 const fs = require('fs');
 
@@ -172,7 +172,7 @@ server.listen(process.argv[2]);
 
 ### HTTP Uppercaser
 The example below receives POST requests, converts the POST request data to uppercase and returns it to the client.
-```
+```js
 const http = require('http');
 
 let server = http.createServer((request, response) => {
@@ -188,7 +188,7 @@ server.listen(process.argv[2]);
 
 ## Creating an API Server
 The `url` module is helpful in parsing the URL of the API request. The example below serves JSON data in a string format when it receives a GET request to the path `/api/parsetime`, where the query string contains the key 'iso' and an ISO-format time as value. Another endpoint for this server, with the path `/api/unixtime` accepts the same query string but returns the UNIX epoch time in milliseconds.
-```
+```js
 const http = require('http');
 const url = require('url');
 
