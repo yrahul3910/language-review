@@ -224,3 +224,25 @@ public class BlogController : Controller
 ```
 *  Applying the route attribute at the controller level does not automatically apply the custom route to actions that don't have the route attributes applied. We can use an empty string for the parameter of the `Route` attribute in cases where we want the custom route.
 * Adding custom routes like this removes them from the candidates for the more generic routes defined in the `Startup` class.
+
+# Rendering Dynamic Content with Razor
+* The default code for each action has `return View();`. ASP.NET Core MVC looks for the view in 2 folders, `/Views/Home/Index.cshtml`, and `/Views/Shared/Index.cshtml` (for the Index action of the Home controller).  
+
+* HTML is valid Razor syntax. To add C# code, simply use the @ symbol. Example:
+```
+<p>
+    Copyright @DateTime.Now.Year
+</p>
+```
+* The real power of Razor comes from HTML Helpers. The most common is the `Html.ActionLink` helper, which generates anchor tags based on a controller and an action name. This version takes 3 parameters - the link text, the action, and the controller where the action lives. Example:
+```
+@Html.ActionLink("Read Our Blog", "Index", "Blog")
+```
+* An alternate form of this takes two additional parameters, a `RouteData` object, and a `HtmlAttributes` object. In the below example, we use an anonymous type for the last parameter.
+```
+@Html.ActionLink("Read Our Blog", "Index", "Blog", null, new { title = "Read Our Blog!" })
+```
+* An alternative to `Html.ActionLink` is the `Url.Action` helper. This takes the names of the action and controller. However, this only renders the URL of the link, and no additional HTML. The equivalent to the above would be:
+```
+<a href="@Url.Action("Index", "Blog)" title="Read Our Blog!">Read Our Blog</a>
+```
