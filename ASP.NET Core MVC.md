@@ -246,3 +246,39 @@ public class BlogController : Controller
 ```
 <a href="@Url.Action("Index", "Blog)" title="Read Our Blog!">Read Our Blog</a>
 ```
+
+# Layouts with Razor
+* Layouts let you extract common markup into a different Razor view, which is put into the `Shared` views folder.
+* We put shared HTML markup into `/Views/Shared/_Layout.cshtml`. The `_Layout` is simply a naming convention to indicate this is a layout page.
+* In the layout page, we remove all the content, leaving only the shared markup. Then, where the page content will fit in, we add `@RenderBody()`.
+* To use this layout, in `/Views/Home/index.cshtml`, we remove all the code, and simply type:
+```
+@{
+    Layout = "_Layout";
+}
+
+<div>
+    <!-- Body content here -->
+</div>
+```
+* The MVC framework also has a `@RenderSection` helper when multiple parts of the side need to change for different pages. To do this, use 
+```
+@RenderSection("section_name");
+```
+in the layout page. Then, in the page using this layout, add
+```
+@section section_name {
+    <h2>The markup here
+}
+```
+* `RenderSection` takes an optional second parameter, which is a boolean telling whether the section is required or not.
+* You can also define a default markup for a section as shown:
+```
+@if (IsSectionDefined("header"))
+{
+    @RenderSection("header", false)
+} else
+{
+    <h1>Explore our world your way</h1>
+}
+```
