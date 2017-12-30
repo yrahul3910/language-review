@@ -282,7 +282,14 @@ sorts in descending order. The square brackets is for *lambda capture* expressio
 ```cpp
 [=, &var]
 ```
-captures all variables except var by value.
+captures all variables except var by value.  
+
+Since C++14, lambda parameters can also accept `auto`, and these are called generic lambdas. Further, since C++20, lambdas can be templated. Example [from CPPReference](http://en.cppreference.com/w/cpp/language/lambda).
+```cpp
+auto f = []<typename T>(T a, auto&& b) {
+    return a < b;
+};
+```
 
 # Structures
 A collection of variables in one user-defined data type. All members are public by default, and a `struct` cannot have member functions. Example:
@@ -603,7 +610,7 @@ In the above example, `int&&` is an rvalue reference, and `T&&` is called a univ
 # Other C++11 Features
 ## Generating Random Numbers
 The new `<random>` header file allows for multiple ways to generate random numbers, based on various distributions. One way of doing this is:
-```
+```cpp
 int generate_random(int min, int max)
 {
     std::random_device rd;
