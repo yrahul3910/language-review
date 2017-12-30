@@ -49,6 +49,7 @@ Table Of Contents
          * [xvalues, prvalues, glvalues](#xvalues-prvalues-glvalues)
          * [Forwarding References](#forwarding-references)
    * [Other C++11 Features](#other-c11-features)
+      * [Generating Random Numbers](#generating-random-numbers)
       * [Range-Based For Loops](#range-based-for-loops)
       * [<code>override</code> and <code>final</code>](#override-and-final)
       * [The <code>constexpr</code> Specifier](#the-constexpr-specifier)
@@ -600,6 +601,19 @@ bar(k); // OK, T is deduced as int&
 In the above example, `int&&` is an rvalue reference, and `T&&` is called a universal reference or forwarding reference (as it is called in the [proposal for the C++17 standard](https://isocpp.org/files/papers/N4164.pdf). The `auto&&` reference is also a forwarding reference.
 
 # Other C++11 Features
+## Generating Random Numbers
+The new `<random>` header file allows for multiple ways to generate random numbers, based on various distributions. One way of doing this is:
+```
+int generate_random(int min, int max)
+{
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::uniform_int_distribution<int> dist(min, max);
+    return dist(rng);
+}
+```
+The Mersenne Twister doesn't need to be seeded because `random_device` requests random data from the OS.
+
 ## Range-Based For Loops
 This syntax allows the use of for-each style loops, with the syntax:
 ```cpp
